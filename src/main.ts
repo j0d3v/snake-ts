@@ -12,37 +12,33 @@ const board = document.getElementById("board") as HTMLCanvasElement;
 board.width = BOARD_SIZE;
 board.height = BOARD_SIZE;
 const ctx = board.getContext("2d")!;
-
-let currentPosition = randomPosition();
-let foodPosition = randomPosition();
-fillCell(currentPosition, ctx);
-window.addEventListener("keydown", (event) => {
-  event.preventDefault();
-  clearCell(currentPosition, ctx);
-  switch (event.code) {
-    case "ArrowUp":
-      if (currentPosition.y > 0) currentPosition.y--;
-      break;
-    case "ArrowDown":
-      if (currentPosition.y < GRID_SIZE - 1) currentPosition.y++;
-      break;
-    case "ArrowLeft":
-      if (currentPosition.x > 0) currentPosition.x--;
-      break;
-    case "ArrowRight":
-      if (currentPosition.x < GRID_SIZE - 1) currentPosition.x++;
-      break;
-  }
-  if (
-    currentPosition.x == foodPosition.x &&
-    currentPosition.y == foodPosition.y
-  ) {
-    foodPosition = randomPosition();
-    drawImage(food, foodPosition, ctx);
-  }
-  fillCell(currentPosition, ctx);
-});
-drawBoard(ctx);
 const food = new Image();
 food.src = "/apple.svg";
-food.onload = () => drawImage(food, foodPosition, ctx);
+
+let headPos = randomPosition();
+let foodPos = randomPosition();
+
+const directions: Map<string, number[]> = new Map([
+  ["ArrowUp", [0, -1]],
+  ["ArrowDown", [0, 1]],
+  ["ArrowLeft", [-1, 0]],
+  ["ArrowRight", [1, 0]],
+]);
+
+fillCell(headPos, ctx);
+window.addEventListener("keydown", (event) => {
+  event.preventDefault();
+  clearCell(headPos, ctx);
+  if (directions.has(event.code)) {
+    const [dx, dy] = directions.get(event.code)!;
+    headPos.x += headPos.x + dx > 0 && headPos.x + dx < GRID_SIZE - 1 ? dx : 0;
+    headPos.y += headPos.y + dy > 0 && headPos.y + dy < GRID_SIZE - 1 ? dy : 0;
+  }
+  if (headPos.x == foodPos.x && headPos.y == foodPos.y) {
+    foodPos = randomPosition();
+    drawImage(food, foodPos, ctx);
+  }
+  fillCell(headPos, ctx);
+});
+drawBoard(ctx);
+food.onload = () => drawImage(food, foodPos, ctx);
