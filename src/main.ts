@@ -2,6 +2,7 @@ import {
   BOARD_SIZE,
   clearCell,
   drawBoard,
+  drawImage,
   fillCell,
   GRID_SIZE,
   randomPosition,
@@ -13,6 +14,7 @@ board.height = BOARD_SIZE;
 const ctx = board.getContext("2d")!;
 
 let currentPosition = randomPosition();
+let foodPosition = randomPosition();
 fillCell(currentPosition, ctx);
 window.addEventListener("keydown", (event) => {
   event.preventDefault();
@@ -31,6 +33,16 @@ window.addEventListener("keydown", (event) => {
       if (currentPosition.x < GRID_SIZE - 1) currentPosition.x++;
       break;
   }
+  if (
+    currentPosition.x == foodPosition.x &&
+    currentPosition.y == foodPosition.y
+  ) {
+    foodPosition = randomPosition();
+    drawImage(food, foodPosition, ctx);
+  }
   fillCell(currentPosition, ctx);
 });
 drawBoard(ctx);
+const food = new Image();
+food.src = "/apple.svg";
+food.onload = () => drawImage(food, foodPosition, ctx);

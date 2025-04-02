@@ -27,7 +27,19 @@ function clearCell(position: Position, ctx: CanvasRenderingContext2D): void {
     CELL_SIZE
   );
 }
-
+function drawImage(
+  img: HTMLImageElement,
+  position: Position,
+  ctx: CanvasRenderingContext2D
+) {
+  ctx.drawImage(
+    img,
+    position.x * CELL_SIZE - CELL_SIZE / 2,
+    position.y * CELL_SIZE - CELL_SIZE / 2,
+    CELL_SIZE * 2,
+    CELL_SIZE * 2
+  );
+}
 function drawBoard(ctx: CanvasRenderingContext2D): void {
   for (let i = 0; i < GRID_SIZE; i++) {
     for (let j = 0; j < GRID_SIZE; j++) {
@@ -44,6 +56,7 @@ function randomPosition(): Position {
 export {
   fillCell,
   clearCell,
+  drawImage,
   drawBoard,
   GRID_SIZE,
   CELL_SIZE,
