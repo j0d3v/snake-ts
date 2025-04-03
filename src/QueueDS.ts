@@ -9,6 +9,7 @@ interface Queue<T> {
   enqueue(item: T): void;
   dequeue(): T | undefined;
   isEmpty(): boolean;
+  contains(other: Position): boolean;
 }
 export class PositionQueue implements Queue<Position> {
   items: Position[] = [];
@@ -29,5 +30,8 @@ export class PositionQueue implements Queue<Position> {
   }
   isEmpty(): boolean {
     return this.items.length == 0;
+  }
+  contains(other: Position): boolean {
+    return this.items.some((pos) => pos.x == other.x && pos.y == other.y);
   }
 }

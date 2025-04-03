@@ -42,9 +42,16 @@ window.addEventListener("keydown", (event) => {
   headPos.x += headPos.x + dx >= 0 && headPos.x + dx < GRID_SIZE ? dx : 0;
   headPos.y += headPos.y + dy >= 0 && headPos.y + dy < GRID_SIZE ? dy : 0;
 
+  if (QMovements.contains(headPos)) {
+    alert("Game over");
+  }
   // Check if food is eaten
   if (headPos.x === foodPos.x && headPos.y === foodPos.y) {
-    foodPos = randomPosition();
+    let tmpPos = randomPosition();
+    while (QMovements.contains(tmpPos)) {
+      tmpPos = randomPosition();
+    }
+    foodPos = tmpPos;
     drawImage(food, foodPos, ctx);
     snakeLength++;
   }
