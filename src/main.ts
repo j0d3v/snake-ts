@@ -13,6 +13,7 @@ const board = document.getElementById("board") as HTMLCanvasElement;
 board.width = BOARD_SIZE;
 board.height = BOARD_SIZE;
 const ctx = board.getContext("2d")!;
+
 const food = new Image();
 food.src = "/apple.svg";
 
@@ -25,30 +26,38 @@ const directions: Map<string, number[]> = new Map([
   ["ArrowLeft", [-1, 0]],
   ["ArrowRight", [1, 0]],
 ]);
+
 const QMovements = new PositionQueue(GRID_SIZE);
 let snakeLength = 1;
+
 fillCell(headPos, ctx);
+
 window.addEventListener("keydown", (event) => {
   event.preventDefault();
+  if (!directions.has(event.code)) return;
+
   let prevPos = { ...headPos };
-  if (directions.has(event.code)) {
-    const [dx, dy] = directions.get(event.code)!;
-    headPos.x +=
-      headPos.x + dx >= 0 && headPos.x + dx <= GRID_SIZE - 1 ? dx : 0;
-    headPos.y +=
-      headPos.y + dy >= 0 && headPos.y + dy <= GRID_SIZE - 1 ? dy : 0;
-    QMovements.enqueue(prevPos);
-  }
-  if (headPos.x == foodPos.x && headPos.y == foodPos.y) {
+  const [dx, dy] = directions.get(event.code)!;
+
+  headPos.x += headPos.x + dx >= 0 && headPos.x + dx < GRID_SIZE ? dx : 0;
+  headPos.y += headPos.y + dy >= 0 && headPos.y + dy < GRID_SIZE ? dy : 0;
+
+  // Check if food is eaten
+  if (headPos.x === foodPos.x && headPos.y === foodPos.y) {
     foodPos = randomPosition();
     drawImage(food, foodPos, ctx);
     snakeLength++;
   }
+
+  QMovements.enqueue(prevPos);
   fillCell(headPos, ctx);
+
+  // Clearing the tail
   if (QMovements.size() >= snakeLength) {
-    let tail = QMovements.dequeue();
+    const tail = QMovements.dequeue();
     if (tail) clearCell(tail, ctx);
   }
 });
+
 drawBoard(ctx);
 food.onload = () => drawImage(food, foodPos, ctx);
