@@ -31,10 +31,6 @@ fillCell(headPos, ctx);
 window.addEventListener("keydown", (event) => {
   event.preventDefault();
   let prevPos = { ...headPos };
-  if (QMovements.size() >= snakeLength) {
-    let tail = QMovements.dequeue();
-    if (tail) clearCell(tail, ctx);
-  }
   if (directions.has(event.code)) {
     const [dx, dy] = directions.get(event.code)!;
     headPos.x +=
@@ -49,6 +45,10 @@ window.addEventListener("keydown", (event) => {
     snakeLength++;
   }
   fillCell(headPos, ctx);
+  if (QMovements.size() >= snakeLength) {
+    let tail = QMovements.dequeue();
+    if (tail) clearCell(tail, ctx);
+  }
 });
 drawBoard(ctx);
 food.onload = () => drawImage(food, foodPos, ctx);
