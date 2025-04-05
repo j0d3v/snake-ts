@@ -40,8 +40,8 @@ export default class Snake {
     if (
       newHead.x < 0 ||
       newHead.y < 0 ||
-      newHead.x > GRID_SIZE ||
-      newHead.y > GRID_SIZE
+      newHead.x >= GRID_SIZE ||
+      newHead.y >= GRID_SIZE
     )
       return false;
 
