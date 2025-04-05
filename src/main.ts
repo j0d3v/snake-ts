@@ -1,21 +1,11 @@
-import {
-  BOARD_SIZE,
-  Direction,
-  drawBoard,
-  drawImage,
-  randomPosition,
-} from "./boardUtils";
+import { BOARD_SIZE, Direction, drawBoard, randomPosition } from "./boardUtils";
+import Food from "./food";
 import Snake from "./snake";
 
 const board = document.getElementById("board") as HTMLCanvasElement;
 board.width = BOARD_SIZE;
 board.height = BOARD_SIZE;
 const ctx = board.getContext("2d")!;
-
-const food = new Image();
-food.src = "/apple.svg";
-
-let foodPos = randomPosition();
 
 const directions: Map<string, Direction> = new Map([
   ["ArrowUp", Direction.Up],
@@ -25,6 +15,7 @@ const directions: Map<string, Direction> = new Map([
 ]);
 
 const snake = new Snake(ctx);
+const food = new Food(randomPosition(), "apple.svg", ctx);
 
 window.addEventListener("keydown", (event) => {
   event.preventDefault();
@@ -33,13 +24,12 @@ window.addEventListener("keydown", (event) => {
   const direction = directions.get(event.code)!;
 
   // Check if food is eaten
-  if (snake.head.x === foodPos.x && snake.head.y === foodPos.y) {
-    let tmpPos = randomPosition();
-    while (snake.collidesWith(tmpPos)) {
-      tmpPos = randomPosition();
+  if (food.collidesWith(snake.currentHead)) {
+    let newFoodPos = randomPosition();
+    while (snake.collidesWith(newFoodPos)) {
+      newFoodPos = randomPosition();
     }
-    foodPos = tmpPos;
-    drawImage(food, foodPos, ctx);
+    food.draw(newFoodPos);
     snake.grow();
   }
   if (snake.move(direction)) {
@@ -48,4 +38,3 @@ window.addEventListener("keydown", (event) => {
 });
 
 drawBoard(ctx);
-food.onload = () => drawImage(food, foodPos, ctx);
