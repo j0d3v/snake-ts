@@ -41,7 +41,7 @@ function drawImage(
 function drawBoard(ctx: CanvasRenderingContext2D): void {
   for (let i = 0; i < GRID_SIZE; i++) {
     for (let j = 0; j < GRID_SIZE; j++) {
-      ctx.strokeRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      clearCell({x:i,y:j},ctx)
     }
   }
 }
