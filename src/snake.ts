@@ -7,16 +7,19 @@ import {
   randomPosition,
 } from "./boardUtils";
 export default class Snake {
-  length: number;
-  head: Position;
-  segments: Position[];
-  context: CanvasRenderingContext2D;
+  private length: number;
+  private head: Position;
+  private segments: Position[];
+  private context: CanvasRenderingContext2D;
   constructor(ctx: CanvasRenderingContext2D) {
     this.context = ctx;
     this.length = 1;
     this.head = randomPosition();
     this.segments = [this.head];
     fillCell(this.head, this.context);
+  }
+  get currentHead(): Position {
+    return this.head;
   }
   move(direction: Direction) {
     let newHead: Position = { x: this.head.x, y: this.head.y };
