@@ -13,12 +13,16 @@ export default class Food {
     this.context = ctx;
     this.img = new Image();
     this.img.src = source;
-    this.img.onload = () => this.draw(this.position);
+    this.img.onload = () => this.draw();
   }
   collidesWith(other: Position): boolean {
     return this.position.x === other.x && this.position.y === other.y;
   }
-  draw(pos: Position) {
-    drawImage(this.img, pos, this.context);
+  draw() {
+    drawImage(this.img, this.position, this.context);
+  }
+  updatePosition(newPos: Position) {
+    this.position = newPos;
+    this.draw();
   }
 }

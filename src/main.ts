@@ -23,18 +23,17 @@ window.addEventListener("keydown", (event) => {
 
   const direction = directions.get(event.code)!;
 
+  if (!snake.move(direction)) console.log("Snake is couldn't move");
+
   // Check if food is eaten
   if (food.collidesWith(snake.currentHead)) {
     let newFoodPos = randomPosition();
     while (snake.collidesWith(newFoodPos)) {
       newFoodPos = randomPosition();
     }
-    food.draw(newFoodPos);
+    food.updatePosition(newFoodPos);
     snake.grow();
   }
-  if (snake.move(direction)) {
-    console.log("Snake is moving ...");
-  } else console.log("Snake is couldn't move");
 });
 
 drawBoard(ctx);
