@@ -1,13 +1,11 @@
 import {
   BOARD_SIZE,
-  clearCell,
+  Direction,
   drawBoard,
   drawImage,
-  fillCell,
-  GRID_SIZE,
   randomPosition,
 } from "./boardUtils";
-import { PositionQueue } from "./QueueDS";
+import Snake from "./snake";
 
 const board = document.getElementById("board") as HTMLCanvasElement;
 board.width = BOARD_SIZE;
@@ -17,53 +15,36 @@ const ctx = board.getContext("2d")!;
 const food = new Image();
 food.src = "/apple.svg";
 
-let headPos = randomPosition();
 let foodPos = randomPosition();
 
-const directions: Map<string, number[]> = new Map([
-  ["ArrowUp", [0, -1]],
-  ["ArrowDown", [0, 1]],
-  ["ArrowLeft", [-1, 0]],
-  ["ArrowRight", [1, 0]],
+const directions: Map<string, Direction> = new Map([
+  ["ArrowUp", Direction.Up],
+  ["ArrowDown", Direction.Down],
+  ["ArrowLeft", Direction.Left],
+  ["ArrowRight", Direction.Right],
 ]);
 
-const QMovements = new PositionQueue(GRID_SIZE);
-let snakeLength = 1;
-
-fillCell(headPos, ctx);
+const snake = new Snake(ctx);
 
 window.addEventListener("keydown", (event) => {
   event.preventDefault();
   if (!directions.has(event.code)) return;
 
-  let prevPos = { ...headPos };
-  const [dx, dy] = directions.get(event.code)!;
+  const direction = directions.get(event.code)!;
 
-  headPos.x += headPos.x + dx >= 0 && headPos.x + dx < GRID_SIZE ? dx : 0;
-  headPos.y += headPos.y + dy >= 0 && headPos.y + dy < GRID_SIZE ? dy : 0;
-
-  if (QMovements.contains(headPos)) {
-    alert("Game over");
-  }
   // Check if food is eaten
-  if (headPos.x === foodPos.x && headPos.y === foodPos.y) {
+  if (snake.head.x === foodPos.x && snake.head.y === foodPos.y) {
     let tmpPos = randomPosition();
-    while (QMovements.contains(tmpPos)) {
+    while (snake.collidesWith(tmpPos)) {
       tmpPos = randomPosition();
     }
     foodPos = tmpPos;
     drawImage(food, foodPos, ctx);
-    snakeLength++;
+    snake.grow();
   }
-
-  QMovements.enqueue(prevPos);
-  fillCell(headPos, ctx);
-
-  // Clearing the tail
-  if (QMovements.size() >= snakeLength) {
-    const tail = QMovements.dequeue();
-    if (tail) clearCell(tail, ctx);
-  }
+  if (snake.move(direction)) {
+    console.log("Snake is moving ...");
+  } else console.log("Snake is couldn't move");
 });
 
 drawBoard(ctx);

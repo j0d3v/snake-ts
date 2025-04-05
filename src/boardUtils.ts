@@ -1,7 +1,5 @@
-import { Position } from "./QueueDS";
-
 const GRID_SIZE = 10;
-const BOARD_SIZE = 800;
+const BOARD_SIZE = 500;
 const CELL_SIZE = Math.floor(BOARD_SIZE / GRID_SIZE);
 
 function fillCell(position: Position, ctx: CanvasRenderingContext2D): void {
@@ -52,6 +50,16 @@ function randomPosition(): Position {
     x: Math.floor(Math.random() * GRID_SIZE),
     y: Math.floor(Math.random() * GRID_SIZE),
   };
+}
+export type Position = {
+	x: number;
+	y: number;
+  };
+export enum Direction{
+	Up,
+	Down,
+	Left,
+	Right
 }
 export {
   fillCell,
