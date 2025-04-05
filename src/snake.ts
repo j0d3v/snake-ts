@@ -16,10 +16,12 @@ export default class Snake {
     this.length = 1;
     this.head = randomPosition();
     this.segments = [this.head];
-    fillCell(this.head, this.context);
   }
   get currentHead(): Position {
     return this.head;
+  }
+  draw() {
+    fillCell(this.head, this.context);
   }
   move(direction: Direction) {
     let newHead: Position = { x: this.head.x, y: this.head.y };
@@ -44,6 +46,9 @@ export default class Snake {
       newHead.y >= GRID_SIZE
     )
       return false;
+
+    // Self collision check
+    if (this.collidesWith(newHead)) return false;
 
     this.head = newHead;
     this.segments.unshift(this.head);
